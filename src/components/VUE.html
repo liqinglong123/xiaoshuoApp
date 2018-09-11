@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<pre style="font-size:25px;">
+    生命周期都是function类型
+        第一步：
+            beforeCreate：在对象创造出来之前，做数据初始化，不能获取数据，不能挂载dom
+        第二步：
+            created（★）：可以获取数据，不能挂载dom对象，
+        第三步：
+            beforeMount：把vue的组件挂载到dom对象之前要做的事，也就是说dom和vue的挂载点
+        第四步：
+            mounted（★）：已经把vue组件绑定到dom对象上了，挂载好对象，
+        第五步：虚拟dom中去比较，看数据是否被改，如果被改了，重新渲染
+            beforeUpdate & updated（★）：beforeUpdate是数据改了，dom没改然后调用，updated是数据改了，dom改了然后再去调用
+        第六步：
+            activated & deactivated（★）:activated  组件被激活的时候   deactivated  组件被停用的时候
+        第七步：
+            beforeDestroy & destroyed：beforeDestroy销毁之前调用，在这一步，实例仍然完全可用，  destroyed实例销毁后调用
+
+        《keep-alive>/keep-alive>》：保证组件在看不到的地方也不会被销毁（扩哪个组件哪个组件就不会被销毁。）
+
+    vuex ：集中式管理所有组件的状态。  用来管理数据 可以共享数据
+        去向mutations里面的state传值的时候，传对象。
+        想改state里的状态值，只能通过mutations里面的方法，去修改，通过载荷（载荷需要传对象），
+        因为之前的vue组件只有自己可以使用
+
+        想找到actions通过dispatch，
+        Vue组件Components通过dispatch 能找到actions，actions把获取到的数据给到Mutations，actions会在内部调用commit方法找Mutations，
+            mutations传两个参数第一个是state状态 第二个是载荷，然后通过改载荷对象里的键改state，
+            想改state里的状态值，只能通过mutations里面的方法，去修改，通过载荷（载荷需要传对象），然后返回给组件。
+        Mutations是同步函数  里面不能写异步语句  里面不能发ajax请求  所以加Actions
+        vue在修改数据后，试图不会立刻更新，而是等同一事件循环中的所有数据变化完之后，在统一进行视图更新、
+        当vue的数据发生改变时，我们是不能立刻去获取他的dom属性，要等数据都更新完之后（等异步数据更新完），再去获取dom。去执行回调函数。
+        想去发ajax请求（都是异步）：用fetch，jquery，vue-axios
+
+    vue-cli：可以帮我们生成一大堆东西
+
+        build 与 config 目录里面存放的是webpack 配置相关文件
+        node_modules 文件夹 是通过 npm   install  安装的依赖代码库
+        src 是以后我们写文件的地方
+        static 存放一些第三方静态资源文件
+        .babelrc  存放 babel 的一些配置文件，因为我们编写的代码用到了es6 但很多浏览器是不支持es6语法的，采取的做法是通过babel     把es6 编译成 es5帮我们把es6，es7，es8转成es5。
+        .editorconfig   编辑器的配置
+        ESlint：他是一个代码语法，风格的检查器
+        .eslintignore     哪些目录不需要语法检查
+        .eslintrc.js        是 eslint的配置文件
+        .gitignore       是git仓库忽略掉 某些目录与文件
+        .postcssrc.js      PostCSS是一款使用插件去转换CSS的工具，
+        脚手架用 app.js 去发布
+        @ 表示 src
+
+        inject有四个值： true body head false
+        true 默认值，script标签位于html文件的 body 底部
+        body script标签位于html文件的 body 底部
+        head script标签位于html文件的 head中
+        false 不插入生成的js文件，这个几乎不会用到
+
+        -s 是 --static（静态） 的缩写
+        -p 是 --port（端口） 的缩写
+        每个守卫方法接收三个参数
+            to:Route:即将进入的目标 路由对象
+            from:Route 当前导航正要离开的路由
+            next:Function 一定调用该方法resolve这个钩子,执行效果依赖next方法的调用参数d
+        父路由有子路由 父路由页面一定有一个《router-view/》
+        什么是Vue.nextTick()
+            在下次DOM更新循环之后的回调函数,在修改数据之后使用,获取更新后的数据
+
+        mvvm ：vue也是一门MVVM的框架。
+        MVVM是：一个model+view+viewModel框架，数据模型model，viewModel连接两个
+
+            单页应用程序  和 多页面应用程序
+            多页面应用：页面跳转 返回HTML
+                优点：首屏时间快，SEO效果好
+                缺点：切面切换慢
+            单页应用：页面跳转 JS渲染
+                优点：页面切换快
+                缺点：首屏时间稍慢，SEO差
+
+        英文：alias别名      resolve决定      component组件        teardown卸载
+        基本指令：
+             v-text（单向）：{{ }} 就是v-text的简写：显示文本内容
+             示例： 《span v-text="msg"></span》       等同于         《span>{{msg}}</span》
+             v-html （单向）：可以把dom元素加到某个  中去
+             v-model（双向绑定）：数据会回传给后台。  ----     @符号 ：绑定事件使用。
+             所谓双向绑定，指的就是我们在js中的vue实例中的data与其渲染的dom元素上的内容保持一致，两者无论谁被改变，另一方也会相应的更新为相同的数据
+             input-radio ：对于单选框，是 " " 号赋值，
+             input-checkbox：对于复选框，是中括号赋值，
+             input-range：对于滑块，数组赋值,
+             input-number：根据上下箭头去选值，如果要自己输入值，那就是String。
+                 如果指定要是number：就要这样写v-model.number
+             textarea：多行文本输入
+             v-bind：用来绑定属性或样式表
+             v-bind:class(简写 ：)  --------  用于内嵌
+             v-bind:class="{类名 : 表达式 为真加类 为假就不加类}"
+             简写：:class="{类名 : 表达式 为真加类 为假就不加类}"
+             :disabled="表达式" 自定义的 属性 后面也是存的表达式
+             可以绑定一个或多个属性值
+             给class绑定多个值，有两种写法：
+                一种是对象方式 一种数组
+             v-model-trim ：可以帮我们去掉首尾空格。
+             v-on： v-on开头的都可以用@简写。
+             v-on:click是单击事件
+             v-on-bdclick：是双击事件所有
+             v-show：根据真假值控制隐藏和显示。【值为true就是显示，值为false就是隐藏】
+             v-if & v-else ：交替显示，他两之间不能插其他东西。
+             v-for：循环【建议使用of】可以循环数组，循环对象，循环常数
+             你也可以用 of 替代 in 作为分隔符，因为它是最接近 JavaScript 迭代器的语法
+             循环对象时有三个值：item，key，index
+             循环一个常数时：注意：vue1版本是从0开始    vue2版本是从1开始的
+
+             计算属性(computed)：计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时才会重新求值。
+              组件:组件可以扩展 HTML 元素，封装可重用的代码
+                  组件 (Component) 是 Vue.js 最强大的功能之一。组件可以扩展 HTML 元素，封装可重用的代码。在较高层面上，组件是自定义元素，Vue.js 的编译器为它添加特殊功能。在有些情况下，组件也可以表现为用 is 特性进行了扩展的原生 HTML 元素。
+              想渲染组件有两种方式：1.通过渲染 2.通过
+              在组件里面 script 有一个 固定写法的事。。data不再是对象了  data变成函数了
+              scoped是给每个dom对象添加一个data属性的8位随机码，防止组件和组件之间的样式冲突
+
+
+</pre>
+    声明式 《router-link :to="..."》  编程式 router.push(...)
+ 用到插件说明:
+      axios  用于实现ajax数据的获取
+      Vue Router  用于多页面之间的路由
+      Vuex    用于各组件之间的数据共享
+      stylus   编写前端样式
+      vue-lazyload  图片懒加载
+      vue-touch  移动端 有点击300毫秒延迟
+ 子父传值无需说明
+      父-->子  子改变父组件值,只能是f-v形式, 子组件才能++,否则报错
+</body>
+</html>

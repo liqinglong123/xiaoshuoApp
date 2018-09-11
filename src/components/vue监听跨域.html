@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <pre>
+        <div>
+          浅监听 str字符串
+            obj:{name:"LiSi",age:3}  str:"李子"
+            1、mounted方法【编译之后代替之前ready】
+                //浅监听
+                let unwatch = this.$watch("str",(val,oldVal)=>{
+                    console.log(`new:${val},old:${oldVal}`);
+                    this.count++;
+                    if(this.count>=10){
+                        unwatch();
+                        //改变10次后不在监听
+                    }
+                });
+
+                打印出来的是改变之前|改变之后值
+                //第一个参数位监听属性名称
+                //第二个参数回调函数,可以获得属性变化的新旧值
+                //第三个参数（可选）,深监听（对象属性变化使用）
+
+            2、watch
+                str(val,oldVal){
+                    console.log(`new:${val},old:${oldVal}`);
+                },
+
+
+          深监听 obj  对象
+            1、mounted方法
+                 改变age深监听 《input type="text" v-model="obj.name"》
+                        《p>{{obj.name}}》《/p》
+                        《p>改了几次{{num}}》《/p》
+                var deunwatch = this.$watch("obj",function (val,oldVal) {
+                    console.log(`new:${val}.old:${oldVal}`);
+                    this.num++;
+                    if(this.num>=10){
+                        deunwatch();
+                    }
+                },{deep:true})
+            2、watch
+                obj:{
+                    handler(val,oldVal){
+                        console.log(`new:${val.name},old:${oldVal.name}`);
+                        this.num++;
+                    },
+                    deep:true,
+                },
+        </div>
+        <div>
+            监听数据变化
+                改变第一个innerHTML 和 最后一个innerHTML值    总的innerHTML改变
+            // 改上,下变
+                1、watch
+                      first:'yao',last:'GG',all:"yao GG"
+                    first(val){
+                        this.all=val +" "+ this.last
+                    },
+                    last(val){
+                        this.all=this.first +" "+ val
+                    }
+                2、computed
+                    all(){
+                        return this.first+" "+this.last
+                    },
+                 !!!!!!!!! data中不可定义all && 拼接:`《span》{{all}}《/span》`
+            //改下 上变
+
+        </div>
+        <div>
+        $http
+            使用$http跨域,安装： cnpm install vue-resource –save
+            main.js中引入：import  VueResource  from 'vue-resource';
+                     使用：Vue.use(VueResource);
+        jquery
+        axios
+            config --> index.js
+                '/apia': {
+                ````````
+                      target: 'http://jiudintu.duapp.com',//这个路径是我代理到本地的php服务器  路径删掉最后一个
+                      changeOrigin: true,  //是否跨域
+                      pathRewrite: {
+                      '^/apia': ''   //这里重写路径运行后就代理到对应地址,如果后台接口没有约定/apis,就为空
+                    }
+                  }},
+            main.js中
+                import axiossss from "axios";
+                Vue.prototype.$axio = axiossss;
+                             -------  相同
+                this.$axio.post("/apia/register",{
+                -------          ``````
+                    name:"LiSiaasd",
+                    password:"1232453",
+                    usertype:0
+                }).then(data=>{}).catch(error=>{})
+
+
+
+            可以并发多个
+                getUserAccount(){
+                    return this.$axios.get('/apis/activity');
+                },
+                getUserPermissions(){
+                    return this.$axios.post("/apia/register");
+                },
+                all(){
+                    this.$axios.all([this.getUserAccount(),this.getUserPermissions()]).then(this.$axios.spread(function(acct,perms){
+                        console.log(acct);
+                        console.log(perms);
+                    }))
+                }
+        Vue 的$mount()为手动挂载，在项目中可用于延时挂载（例如在挂载之前要进行一些其他操作、判断等），之后要手动挂载上。
+            new Vue时，el和$mount并没有本质上的不同。
+            1.$el：获取实例挂载的元素
+            2.$data：显示实例中的所有数据
+            3.$data.属性：显示实例中的某一条数据
+            4.$destroy();销毁对象
+                console.log(this.$data,vm.$data);
+            var vm=new Vue({
+                // el: '#app',
+                router,
+                // components: { App },
+                // template: '<App/>'
+                render:h=>h(App)
+            }).$mount("#app");
+
+
+
+        </div>
+        <div>
+            自动过滤器
+            过渡动画
+            组件之间通信 子与父  父与子
+        </div>
+
+
+        关于vue打包后图片路径找不到的问题
+曾姐姐  乐生活趣技术  5月17日
+
+//asserts引入的静态资源是相对路径
+
+<img src="../../../asserts/img/pic3.jpg”/>
+
+//而static引入静态资源时必须是绝对路径
+
+<img src="/static/img/pic3.jpg”/>
+
+slides: [
+    {
+        //当asserts引入动态绑定的静态资源时，需要以模块的方式导入资源，
+       //将图片作为模块加载进去
+        src: require('../../../asserts/img/pic1.jpg’),
+        title: '女人节优惠',
+        href: 'detail/yslqd'
+    },
+
+    {
+        src: '/static/img/pic2.jpg’,
+        title: '满减优惠',
+        href: 'detail/ysllip'
+    }
+
+]
+
+因为有时候打包后的项目文件，不一定是放在服务器的根目录下，这样也会导致图片找不到，可以在config文件中的index.js中去配置
+
+build: {
+
+  // Template for index.html
+
+  index: path.resolve(__dirname, '../dist/index.html'),
+
+
+
+  // Paths
+
+  assetsRoot: path.resolve(__dirname, '../dist'),
+
+  assetsSubDirectory: 'static’,
+
+    //在这里把/改成./，如果这里加了./，那static文件夹引入的图片也要加./，这样无论打包后放到服务器的哪一级目录下，静态资源都不会报错
+
+  assetsPublicPath: ‘./‘
+
+}
+
+slides: [
+    {
+        src: require('../../../asserts/img/pic1.jpg’),
+        title: '女人节优惠',
+        href: 'detail/yslqd'
+    },
+    {
+        src: './static/img/pic2.jpg’,
+        title: '满减优惠',
+        href: 'detail/ysllip'
+    },
+    {
+        src: './static/img/pic3.jpg',
+        title: '精品巨惠',
+        href: 'detail/dior'
+    },
+    {
+        src: './static/img/pic4.jpg',
+        title: '精品巨惠',
+        href: 'detail/pdl'
+    }
+
+]
+
+    属性绑定  前面加冒号  :class="aa"
+    父向子穿 在子中用props接收    props:["aa","bb"]
+        props:[aa:"number",bb:"string"]
+
+
+
+
+
+    </pre>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<pre>
+    导入 src目录下先建文件 index.js
+      导入vue 和安装的插件 vuex   import Vue from "vue"
+      使用插件  Vue.use("Vuex");
+      const store = new Vuex.Store({})
+      到出store export default store;
+      到main.js  中导入
+          import store from "./store"
+          在new Vue({})  中加store（名字）
+
+
+
+
+
+
+
+    vue 状态管理   state中定义 都是通过mutations改变值
+        store.js中  state:{
+                        totalPrice:0
+                    },
+                    mutations:{
+                        add(state,price){
+                            state.totalPrice+=price;
+                        },
+                        jian(state,price){
+                            state.totalPrice-=price;
+                        }
+                    },
+
+        使用文件中 {{$store.state.totalPrice}} 获取值
+            改变值  事件中 add(){
+                            this.$store.commit("add",this.price)
+                        },
+                        minus(){
+                            this.$store.commit("jian",this.price)
+                        }
+                并且要在computed中监听
+                    computed:{
+                            totalPrice(){
+                                return this.$store.state.totalPrice;
+                            }
+                        }
+</pre>
+</body>
+</html>
